@@ -7,5 +7,14 @@
     "category": "arcade",
     "cover": "/games/snake-cover.svg",
     "weight": 100
+  },
+  {
+    "id": "tetris",
+    "slug": "tetris",
+    "title": "Tetris",
+    "system": "native",
+    "category": "puzzle",
+    "cover": "/games/tetris-cover.svg",
+    "weight": 95
   }
 ]

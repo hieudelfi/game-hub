@@ -6,9 +6,9 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Trạng thái hiện tại
 
-**Phase:** 1 — MVP tối giản (6/11 task done, còn Tetris/Flappy/SW/Touch/Responsive)
+**Phase:** 1 — MVP tối giản (7/11 task done, còn Flappy/SW/Touch)
 
-**Toàn dự án MVP:** 11/68 task done (16%)
+**Toàn dự án MVP:** 12/68 task done (18%)
 **Docs foundation:** 15/15 file done (100%)
 
 ## Task board
@@ -29,7 +29,7 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 - [x] P1-1: Hub SDK (types, input keyboard+gamepad, score LocalStorage, canvas DPR, context, loader)
 - [x] P1-2: Plugin loader qua Vite import.meta.glob
 - [x] P1-3: Snake plugin (400x400 canvas, 20x20 grid, 120ms tick, keyboard + gamepad)
-- [ ] P1-4: Viết Tetris plugin
+- [x] P1-4: Tetris plugin (7 tetromino, rotation với wall kick, line clear, level, NES score formula, DAS/ARR movement, next piece preview)
 - [ ] P1-5: Viết Flappy plugin
 - [x] P1-6: Shell router (hash) + 3 view (home/game/result) + styles.css
 - [x] P1-7: High-score LocalStorage hiện trên card catalog và result screen
@@ -105,6 +105,7 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Nhật ký
 
+- 2026-09-17 — P1-4 Tetris: smoke pass. Bundle Tetris chunk 2.30KB gzip. E2E 6/6 (thêm test mount Tetris và count 2 card). Vẫn dùng canvas 400x400 shared, Tetris tự vẽ play area 200x400 + side panel 200x400.
 - 2026-09-17 — P1 smoke: unit 9/9, e2e 5/5, typecheck 0 err, lint xanh. Bundle: shell 3.95KB gzip + game chunk 1.07KB gzip = ~5KB tổng.
 - 2026-09-17 — Snake chơi được đầy đủ vòng: mount → chơi → game over → reportScore → high-score save → result screen. Kỷ lục hiện trên card home lần chơi kế tiếp.
 - 2026-09-17 — Plugin architecture verified: contract chỉ 1 export `manifest` + default `mount(ctx)` → import qua Vite glob → thêm game mới chỉ cần thêm folder `src/games/<slug>/game.ts`.
