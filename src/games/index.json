@@ -16,5 +16,14 @@
     "category": "puzzle",
     "cover": "/games/tetris-cover.svg",
     "weight": 95
+  },
+  {
+    "id": "flappy",
+    "slug": "flappy",
+    "title": "Flappy",
+    "system": "native",
+    "category": "arcade",
+    "cover": "/games/flappy-cover.svg",
+    "weight": 90
   }
 ]

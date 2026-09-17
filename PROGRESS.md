@@ -6,9 +6,9 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Trạng thái hiện tại
 
-**Phase:** 1 — MVP tối giản (7/11 task done, còn Flappy/SW/Touch)
+**Phase:** 1 — MVP tối giản (8/11 task done, còn Service Worker + Touch overlay)
 
-**Toàn dự án MVP:** 12/68 task done (18%)
+**Toàn dự án MVP:** 13/68 task done (19%)
 **Docs foundation:** 15/15 file done (100%)
 
 ## Task board
@@ -30,7 +30,7 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 - [x] P1-2: Plugin loader qua Vite import.meta.glob
 - [x] P1-3: Snake plugin (400x400 canvas, 20x20 grid, 120ms tick, keyboard + gamepad)
 - [x] P1-4: Tetris plugin (7 tetromino, rotation với wall kick, line clear, level, NES score formula, DAS/ARR movement, next piece preview)
-- [ ] P1-5: Viết Flappy plugin
+- [x] P1-5: Flappy plugin (gravity + flap, pipes spawn ngẫu nhiên, ready/playing/over state, bird tilt animation)
 - [x] P1-6: Shell router (hash) + 3 view (home/game/result) + styles.css
 - [x] P1-7: High-score LocalStorage hiện trên card catalog và result screen
 - [ ] P1-8: Setup Service Worker cơ bản
@@ -105,6 +105,7 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Nhật ký
 
+- 2026-09-17 — P1-5 Flappy: smoke pass. Bundle Flappy 3.52KB raw (~1.5KB gzip). E2E 7/7. Vật lý dùng dt seconds. State machine ready/playing/over. Bird tilt theo velocity y.
 - 2026-09-17 — P1-4 Tetris: smoke pass. Bundle Tetris chunk 2.30KB gzip. E2E 6/6 (thêm test mount Tetris và count 2 card). Vẫn dùng canvas 400x400 shared, Tetris tự vẽ play area 200x400 + side panel 200x400.
 - 2026-09-17 — P1 smoke: unit 9/9, e2e 5/5, typecheck 0 err, lint xanh. Bundle: shell 3.95KB gzip + game chunk 1.07KB gzip = ~5KB tổng.
 - 2026-09-17 — Snake chơi được đầy đủ vòng: mount → chơi → game over → reportScore → high-score save → result screen. Kỷ lục hiện trên card home lần chơi kế tiếp.
