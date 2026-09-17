@@ -6,9 +6,9 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Trạng thái hiện tại
 
-**Phase:** 0 — Bootstrapping (5/8 task done, 3 task chờ tài khoản user)
+**Phase:** 1 — MVP tối giản (6/11 task done, còn Tetris/Flappy/SW/Touch/Responsive)
 
-**Toàn dự án MVP:** 5/68 task done (7%)
+**Toàn dự án MVP:** 11/68 task done (16%)
 **Docs foundation:** 15/15 file done (100%)
 
 ## Task board
@@ -26,17 +26,17 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ### Phase 1 — MVP tối giản
 
-- [ ] P1-1: Viết Hub SDK skeleton (input, canvas, score placeholder)
-- [ ] P1-2: Viết plugin contract loader
-- [ ] P1-3: Viết Snake plugin
+- [x] P1-1: Hub SDK (types, input keyboard+gamepad, score LocalStorage, canvas DPR, context, loader)
+- [x] P1-2: Plugin loader qua Vite import.meta.glob
+- [x] P1-3: Snake plugin (400x400 canvas, 20x20 grid, 120ms tick, keyboard + gamepad)
 - [ ] P1-4: Viết Tetris plugin
 - [ ] P1-5: Viết Flappy plugin
-- [ ] P1-6: Viết Catalog UI
-- [ ] P1-7: Save điểm cao nhất vào LocalStorage per game
+- [x] P1-6: Shell router (hash) + 3 view (home/game/result) + styles.css
+- [x] P1-7: High-score LocalStorage hiện trên card catalog và result screen
 - [ ] P1-8: Setup Service Worker cơ bản
 - [ ] P1-9: Touch overlay dpad + buttons
-- [ ] P1-10: Responsive layout mobile/desktop
-- [ ] P1-11: Nút fullscreen
+- [x] P1-10: Responsive layout media query 480px + auto-fill grid
+- [x] P1-11: Nút fullscreen toolbar
 
 ### Phase 2 — Tài khoản + cloud
 
@@ -105,6 +105,10 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Nhật ký
 
+- 2026-09-17 — P1 smoke: unit 9/9, e2e 5/5, typecheck 0 err, lint xanh. Bundle: shell 3.95KB gzip + game chunk 1.07KB gzip = ~5KB tổng.
+- 2026-09-17 — Snake chơi được đầy đủ vòng: mount → chơi → game over → reportScore → high-score save → result screen. Kỷ lục hiện trên card home lần chơi kế tiếp.
+- 2026-09-17 — Plugin architecture verified: contract chỉ 1 export `manifest` + default `mount(ctx)` → import qua Vite glob → thêm game mới chỉ cần thêm folder `src/games/<slug>/game.ts`.
+- 2026-09-17 — Fix: back button từ `<button>+JS location.hash` sang `<a href="#/">` để tránh race hashchange trong Playwright.
 - 2026-09-17 — P0 kết quả smoke test: unit 2/2 pass, typecheck 0 err, build 1.4KB (738B gzip), lint xanh, e2e 2/2 pass.
 - 2026-09-17 — Cài 503 packages qua pnpm; fix pnpm 11 `allowBuilds` để cho esbuild/sharp build (workaround pnpm-workspace.yaml).
 - 2026-09-17 — Astro 5.18.2 stable pinned; Playwright chromium 153 downloaded.
