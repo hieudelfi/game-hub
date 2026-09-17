@@ -90,6 +90,12 @@ export function createInput(): InputSystem {
       (releaseListeners[btn] ??= new Set()).add(cb);
       return () => releaseListeners[btn]?.delete(cb);
     },
+    press(btn) {
+      set(btn, true);
+    },
+    release(btn) {
+      set(btn, false);
+    },
     destroy() {
       destroyed = true;
       window.removeEventListener("keydown", kd);

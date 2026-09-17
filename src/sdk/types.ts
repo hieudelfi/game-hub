@@ -6,6 +6,8 @@ export interface InputSystem {
   isDown(button: Button): boolean;
   onPress(button: Button, cb: () => void): Disposer;
   onRelease(button: Button, cb: () => void): Disposer;
+  press(button: Button): void;
+  release(button: Button): void;
   destroy(): void;
 }
 

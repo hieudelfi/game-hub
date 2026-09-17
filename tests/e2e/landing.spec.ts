@@ -58,3 +58,26 @@ test("service worker file served at /sw.js", async ({ request }) => {
   expect(body).toContain("CACHE_NAME");
   expect(body).toContain("cacheFirst");
 });
+
+test("touch controls hidden on desktop", async ({ page }) => {
+  await page.goto("/#/game/snake");
+  await expect(page.locator('[data-testid="game-canvas"]')).toBeVisible();
+  await expect(page.locator('[data-testid="touch-controls"]')).toBeHidden();
+});
+
+test.describe("mobile viewport (pointer: coarse)", () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    isMobile: true,
+    deviceScaleFactor: 3,
+  });
+
+  test("touch controls visible on mobile viewport", async ({ page }) => {
+    await page.goto("/#/game/snake");
+    await expect(page.locator('[data-testid="game-canvas"]')).toBeVisible();
+    await expect(page.locator('[data-testid="touch-controls"]')).toBeVisible();
+    await expect(page.locator('[data-touch="up"]')).toBeVisible();
+    await expect(page.locator('[data-touch="a"]')).toBeVisible();
+  });
+});

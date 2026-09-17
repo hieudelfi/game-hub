@@ -6,9 +6,9 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Trạng thái hiện tại
 
-**Phase:** 1 — MVP tối giản (9/11 task done, còn Touch overlay)
+**Phase:** 1 — MVP tối giản **HOÀN THÀNH** (11/11 task, trừ khi bổ sung sau)
 
-**Toàn dự án MVP:** 14/68 task done (21%)
+**Toàn dự án MVP:** 15/68 task done (22%). Sẵn sàng vào Phase 2.
 **Docs foundation:** 15/15 file done (100%)
 
 ## Task board
@@ -34,7 +34,7 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 - [x] P1-6: Shell router (hash) + 3 view (home/game/result) + styles.css
 - [x] P1-7: High-score LocalStorage hiện trên card catalog và result screen
 - [x] P1-8: Service Worker (3 strategy: cache-first /assets và /games, network-first navigation, stale-while-revalidate default). Register chỉ ở PROD.
-- [ ] P1-9: Touch overlay dpad + buttons
+- [x] P1-9: Touch overlay dpad + A/B (SDK press/release public, media query pointer:coarse, pointerdown/up + capture, ẩn trên desktop)
 - [x] P1-10: Responsive layout media query 480px + auto-fill grid
 - [x] P1-11: Nút fullscreen toolbar
 
@@ -105,6 +105,8 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Nhật ký
 
+- 2026-09-17 — P1-9 Touch overlay: e2e 10/10 pass. SDK mở rộng `InputSystem.press/release` để nguồn ngoài (touch/gamepad ảo) đẩy state vào. CSS chỉ hiện khi `@media (pointer: coarse)`, ẩn hint trên mobile. Playwright dùng viewport 390x844 + hasTouch + isMobile thay iPhone 12 preset vì preset đó force webkit.
+- 2026-09-17 — Phase 1 MVP tối giản HOÀN THÀNH. 11/11 task, 3 game chơi được đầy đủ, offline cache, mobile control. Sẵn sàng Phase 2 (Supabase auth + cloud save).
 - 2026-09-17 — P1-8 Service Worker: e2e 8/8 pass. SW chỉ register ở PROD build (không phá HMR dev). Manual verify offline: `pnpm build && pnpm preview` rồi DevTools → Network → Offline → reload; game đã cache sẽ chạy được.
 - 2026-09-17 — P1-5 Flappy: smoke pass. Bundle Flappy 3.52KB raw (~1.5KB gzip). E2E 7/7. Vật lý dùng dt seconds. State machine ready/playing/over. Bird tilt theo velocity y.
 - 2026-09-17 — P1-4 Tetris: smoke pass. Bundle Tetris chunk 2.30KB gzip. E2E 6/6 (thêm test mount Tetris và count 2 card). Vẫn dùng canvas 400x400 shared, Tetris tự vẽ play area 200x400 + side panel 200x400.

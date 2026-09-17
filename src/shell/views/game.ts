@@ -1,5 +1,5 @@
 import { createHubContext, createInput, loadGame, resizeCanvas } from "../../sdk";
-import type { HubUser, ScoreResult } from "../../sdk";
+import type { Button, HubUser, InputSystem, ScoreResult } from "../../sdk";
 import type { CatalogEntry } from "../catalog";
 import { showToast } from "../toast";
 
@@ -55,6 +55,18 @@ export async function renderGame(
         <canvas id="game-canvas" tabindex="0" data-testid="game-canvas"></canvas>
       </div>
       <p class="game-view__hint">Điều khiển: mũi tên hoặc WASD. Z hoặc Space = A. X = B.</p>
+      <div class="touch-controls" data-testid="touch-controls">
+        <div class="touch-dpad" role="group" aria-label="Dpad">
+          <button class="touch-btn touch-btn--up" data-touch="up" type="button" aria-label="Lên">▲</button>
+          <button class="touch-btn touch-btn--left" data-touch="left" type="button" aria-label="Trái">◀</button>
+          <button class="touch-btn touch-btn--right" data-touch="right" type="button" aria-label="Phải">▶</button>
+          <button class="touch-btn touch-btn--down" data-touch="down" type="button" aria-label="Xuống">▼</button>
+        </div>
+        <div class="touch-actions" role="group" aria-label="Nút hành động">
+          <button class="touch-btn touch-btn--b" data-touch="b" type="button" aria-label="B">B</button>
+          <button class="touch-btn touch-btn--a" data-touch="a" type="button" aria-label="A">A</button>
+        </div>
+      </div>
     </div>
   `;
 
@@ -102,15 +114,52 @@ export async function renderGame(
 
   fsBtn?.addEventListener("click", toggleFs);
 
+  const touchCleanup = wireTouchControls(input);
+
   canvas.focus({ preventScroll: true });
   instance.start();
 
   return async () => {
     document.removeEventListener("visibilitychange", handleVisibility);
     fsBtn?.removeEventListener("click", toggleFs);
+    touchCleanup();
     input.destroy();
     await instance.stop();
   };
+}
+
+function wireTouchControls(input: InputSystem): () => void {
+  const btns = document.querySelectorAll<HTMLButtonElement>("[data-touch]");
+  const cleanups: Array<() => void> = [];
+
+  btns.forEach((btn) => {
+    const key = btn.getAttribute("data-touch") as Button | null;
+    if (!key) return;
+
+    const onDown = (e: PointerEvent) => {
+      e.preventDefault();
+      btn.setPointerCapture(e.pointerId);
+      input.press(key);
+    };
+    const onUp = () => {
+      input.release(key);
+    };
+
+    btn.addEventListener("pointerdown", onDown);
+    btn.addEventListener("pointerup", onUp);
+    btn.addEventListener("pointercancel", onUp);
+    btn.addEventListener("pointerleave", onUp);
+    btn.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    cleanups.push(() => {
+      btn.removeEventListener("pointerdown", onDown);
+      btn.removeEventListener("pointerup", onUp);
+      btn.removeEventListener("pointercancel", onUp);
+      btn.removeEventListener("pointerleave", onUp);
+    });
+  });
+
+  return () => cleanups.forEach((c) => c());
 }
 
 function escapeHtml(s: string): string {
