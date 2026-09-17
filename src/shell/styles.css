@@ -1,0 +1,265 @@
+:root {
+  color-scheme: dark;
+  --fg: #eee;
+  --bg: #0e0e12;
+  --bg-elev: #1a1a24;
+  --accent: #7cc4ff;
+  --accent-2: #c4f47c;
+  --warn: #f4b860;
+  --err: #fca5a5;
+  --border: #2a2a3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  min-height: 100vh;
+}
+a {
+  color: var(--accent);
+}
+#app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+.loading {
+  opacity: 0.7;
+}
+
+/* Home */
+.home__header {
+  margin-bottom: 2rem;
+}
+.home__title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+.home__tagline {
+  opacity: 0.85;
+  margin: 0;
+}
+.home__tagline strong {
+  color: var(--accent-2);
+  font-weight: 600;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.game-card {
+  display: block;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.15s,
+    border-color 0.15s;
+}
+.game-card:hover,
+.game-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  outline: none;
+}
+.game-card__cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  display: block;
+  background: #000;
+  object-fit: cover;
+}
+.game-card__body {
+  padding: 0.75rem;
+}
+.game-card__title {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+.game-card__hs {
+  font-size: 0.8rem;
+  color: var(--accent-2);
+  margin-bottom: 0.25rem;
+}
+.game-card__hs--empty {
+  color: var(--fg);
+  opacity: 0.5;
+}
+.game-card__meta {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* Game view */
+.game-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+.game-view__toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  align-self: stretch;
+}
+.game-view__title {
+  flex: 1;
+  margin: 0;
+  font-size: 1.25rem;
+  text-align: center;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover,
+.btn:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+.btn--primary {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  filter: brightness(1.05);
+}
+.game-view__stage {
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 8px;
+}
+canvas {
+  display: block;
+  image-rendering: pixelated;
+  outline: none;
+}
+.game-view__hint {
+  font-size: 0.85rem;
+  opacity: 0.65;
+  text-align: center;
+  max-width: 40rem;
+}
+
+/* Result */
+.result {
+  text-align: center;
+  padding: 2rem 1rem;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+.result__game {
+  margin: 0 0 1rem;
+  opacity: 0.7;
+}
+.result__score {
+  font-size: 3.5rem;
+  margin: 0.5rem 0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.result__badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--accent-2);
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.result__hs {
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+.result__duration {
+  opacity: 0.5;
+  font-size: 0.85rem;
+  margin: 0 0 2rem;
+}
+.result__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Toast */
+#toast-root {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 100;
+  pointer-events: none;
+}
+.toast {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  animation: toast-in 0.2s ease;
+  transition: opacity 0.2s;
+}
+.toast--ok {
+  border-color: var(--accent-2);
+}
+.toast--warn {
+  border-color: var(--warn);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  #app {
+    padding: 1rem;
+  }
+  .home__title {
+    font-size: 1.5rem;
+  }
+  .game-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}

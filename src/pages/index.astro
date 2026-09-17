@@ -1,6 +1,6 @@
 ---
 const title = "Game Hub";
-const tagline = "Chơi game console kinh điển và mini-game HTML5, chạy thẳng trên trình duyệt.";
+const description = "Chơi game console kinh điển và mini-game HTML5, chạy thẳng trên trình duyệt.";
 ---
 
 <!doctype html>
@@ -10,62 +10,16 @@ const tagline = "Chơi game console kinh điển và mini-game HTML5, chạy th�
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
     <title>{title}</title>
-    <meta name="description" content={tagline} />
+    <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <main>
-      <h1>{title}</h1>
-      <p class="tagline">{tagline}</p>
-      <p class="status">Đang xây dựng — Phase 0 hoàn tất, chờ thêm game.</p>
-    </main>
-    <style>
-      :root {
-        color-scheme: dark;
-        --fg: #eee;
-        --bg: #0e0e12;
-        --accent: #7cc4ff;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        background: var(--bg);
-        color: var(--fg);
-      }
-      body {
-        font-family:
-          system-ui,
-          -apple-system,
-          "Segoe UI",
-          sans-serif;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-      }
-      main {
-        padding: 2rem;
-        max-width: 40rem;
-        text-align: center;
-      }
-      h1 {
-        margin: 0 0 0.5rem;
-        font-size: 2.5rem;
-        letter-spacing: -0.02em;
-      }
-      .tagline {
-        margin: 0 0 1.5rem;
-        opacity: 0.85;
-        line-height: 1.5;
-      }
-      .status {
-        color: var(--accent);
-        font-size: 0.9rem;
-        opacity: 0.75;
-      }
-    </style>
+    <div id="app" aria-live="polite">
+      <p class="loading">Đang tải...</p>
+    </div>
+    <div id="toast-root" aria-live="polite"></div>
+    <script>
+      import "../shell/main";
+    </script>
   </body>
 </html>

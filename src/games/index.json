@@ -1,0 +1,11 @@
+[
+  {
+    "id": "snake",
+    "slug": "snake",
+    "title": "Snake",
+    "system": "native",
+    "category": "arcade",
+    "cover": "/games/snake-cover.svg",
+    "weight": 100
+  }
+]
