@@ -50,3 +50,11 @@ test("back button returns to home", async ({ page }) => {
   await page.locator("#back-btn").click();
   await expect(page.locator('[data-testid="game-grid"]')).toBeVisible();
 });
+
+test("service worker file served at /sw.js", async ({ request }) => {
+  const response = await request.get("/sw.js");
+  expect(response.status()).toBe(200);
+  const body = await response.text();
+  expect(body).toContain("CACHE_NAME");
+  expect(body).toContain("cacheFirst");
+});

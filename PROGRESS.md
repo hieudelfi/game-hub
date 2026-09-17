@@ -6,9 +6,9 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Trạng thái hiện tại
 
-**Phase:** 1 — MVP tối giản (8/11 task done, còn Service Worker + Touch overlay)
+**Phase:** 1 — MVP tối giản (9/11 task done, còn Touch overlay)
 
-**Toàn dự án MVP:** 13/68 task done (19%)
+**Toàn dự án MVP:** 14/68 task done (21%)
 **Docs foundation:** 15/15 file done (100%)
 
 ## Task board
@@ -33,7 +33,7 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 - [x] P1-5: Flappy plugin (gravity + flap, pipes spawn ngẫu nhiên, ready/playing/over state, bird tilt animation)
 - [x] P1-6: Shell router (hash) + 3 view (home/game/result) + styles.css
 - [x] P1-7: High-score LocalStorage hiện trên card catalog và result screen
-- [ ] P1-8: Setup Service Worker cơ bản
+- [x] P1-8: Service Worker (3 strategy: cache-first /assets và /games, network-first navigation, stale-while-revalidate default). Register chỉ ở PROD.
 - [ ] P1-9: Touch overlay dpad + buttons
 - [x] P1-10: Responsive layout media query 480px + auto-fill grid
 - [x] P1-11: Nút fullscreen toolbar
@@ -105,6 +105,7 @@ Legenda: `[ ]` pending, `[~]` in-progress, `[x]` done, `[!]` blocked, `[-]` skip
 
 ## Nhật ký
 
+- 2026-09-17 — P1-8 Service Worker: e2e 8/8 pass. SW chỉ register ở PROD build (không phá HMR dev). Manual verify offline: `pnpm build && pnpm preview` rồi DevTools → Network → Offline → reload; game đã cache sẽ chạy được.
 - 2026-09-17 — P1-5 Flappy: smoke pass. Bundle Flappy 3.52KB raw (~1.5KB gzip). E2E 7/7. Vật lý dùng dt seconds. State machine ready/playing/over. Bird tilt theo velocity y.
 - 2026-09-17 — P1-4 Tetris: smoke pass. Bundle Tetris chunk 2.30KB gzip. E2E 6/6 (thêm test mount Tetris và count 2 card). Vẫn dùng canvas 400x400 shared, Tetris tự vẽ play area 200x400 + side panel 200x400.
 - 2026-09-17 — P1 smoke: unit 9/9, e2e 5/5, typecheck 0 err, lint xanh. Bundle: shell 3.95KB gzip + game chunk 1.07KB gzip = ~5KB tổng.

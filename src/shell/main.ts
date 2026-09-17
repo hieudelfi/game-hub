@@ -1,6 +1,7 @@
 import "./styles.css";
 import { loadCatalog } from "./catalog";
 import { getOrCreateUser } from "./user";
+import { registerServiceWorker } from "./sw";
 import { renderHome } from "./views/home";
 import { renderGame } from "./views/game";
 import { renderResult } from "./views/result";
@@ -36,3 +37,4 @@ window.addEventListener("hashchange", () => {
 });
 
 void route();
+registerServiceWorker();

@@ -9,6 +9,7 @@ export default [
       "playwright-report/**",
       "test-results/**",
       "coverage/**",
+      "public/**",
     ],
   },
   ...eslintPluginAstro.configs.recommended,
