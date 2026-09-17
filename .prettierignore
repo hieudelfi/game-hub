@@ -1,0 +1,13 @@
+dist/
+.astro/
+node_modules/
+pnpm-lock.yaml
+playwright-report/
+test-results/
+coverage/
+public/favicon.svg
+
+# Docs (mermaid + tables dễ bị Prettier reformat sai)
+*.md
+docs/
+.claude/
