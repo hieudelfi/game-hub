@@ -1,0 +1,105 @@
+/* Design tokens — Game Hub
+   Nguon su that: docs/12-ui-ux-design.md §12.4.
+   Convention --dwk-* de tuong thich skill dwk-ui khi generate component.
+   Khong sua truc tiep — chinh doc truoc, cap nhat file nay trong cung PR. */
+
+:root {
+  color-scheme: dark light;
+
+  /* Color — dark palette (mac dinh) */
+  --dwk-bg: oklch(0.14 0.02 270);
+  --dwk-bg-elev: oklch(0.19 0.02 270);
+  --dwk-bg-sunken: oklch(0.1 0.02 270);
+  --dwk-fg: oklch(0.96 0 0);
+  --dwk-fg-muted: oklch(0.72 0.02 270);
+  --dwk-border: oklch(0.28 0.02 270);
+  --dwk-border-strong: oklch(0.4 0.03 270);
+  --dwk-accent: oklch(0.78 0.14 240);
+  --dwk-accent-fg: oklch(0.15 0.02 270);
+  --dwk-success: oklch(0.86 0.18 130);
+  --dwk-warn: oklch(0.82 0.14 75);
+  --dwk-error: oklch(0.72 0.18 25);
+  --dwk-focus: oklch(0.85 0.2 220);
+
+  /* Typography — font stack */
+  --dwk-font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --dwk-font-display: "Space Grotesk", var(--dwk-font-body);
+  --dwk-font-mono: ui-monospace, "SF Mono", Consolas, monospace;
+
+  /* Typography — scale (co + line-height rieng de reuse voi @theme Tailwind) */
+  --dwk-text-xs: 0.75rem;
+  --dwk-text-xs--line: 1.1;
+  --dwk-text-sm: 0.875rem;
+  --dwk-text-sm--line: 1.4;
+  --dwk-text-base: 1rem;
+  --dwk-text-base--line: 1.5;
+  --dwk-text-lg: 1.125rem;
+  --dwk-text-lg--line: 1.4;
+  --dwk-text-xl: 1.5rem;
+  --dwk-text-xl--line: 1.25;
+  --dwk-text-2xl: 2rem;
+  --dwk-text-2xl--line: 1.15;
+  --dwk-text-hero: clamp(2.5rem, 5vw, 4rem);
+  --dwk-text-hero--line: 1.05;
+
+  /* Spacing — 4px scale */
+  --dwk-space-0: 0;
+  --dwk-space-1: 4px;
+  --dwk-space-2: 8px;
+  --dwk-space-3: 12px;
+  --dwk-space-4: 16px;
+  --dwk-space-5: 20px;
+  --dwk-space-6: 24px;
+  --dwk-space-8: 32px;
+  --dwk-space-10: 40px;
+  --dwk-space-12: 48px;
+  --dwk-space-16: 64px;
+
+  /* Radius */
+  --dwk-radius-sm: 6px;
+  --dwk-radius-md: 10px;
+  --dwk-radius-lg: 14px;
+  --dwk-radius-pill: 999px;
+
+  /* Shadow */
+  --dwk-shadow-1: 0 1px 2px oklch(0 0 0 / 0.3), 0 2px 8px oklch(0 0 0 / 0.2);
+  --dwk-shadow-2: 0 4px 12px oklch(0 0 0 / 0.4), 0 8px 24px oklch(0 0 0 / 0.28);
+  --dwk-shadow-focus: 0 0 0 3px var(--dwk-focus);
+
+  /* Motion — override boi prefers-reduced-motion o duoi */
+  --dwk-dur-fast: 120ms;
+  --dwk-dur-base: 200ms;
+  --dwk-dur-slow: 320ms;
+  --dwk-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dwk-ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Light palette — kich hoat qua data-theme="light" tren <html>.
+   Resolver logic o src/shell/theme.ts + inline script trong index.astro.
+   Khong dung @media (prefers-color-scheme) truc tiep vi user co the force dark
+   khi OS sang, ho phai tuong ung voi Toggle. Xem docs/12-ui-ux-design.md §12.4. */
+[data-theme="light"] {
+  color-scheme: light;
+  --dwk-bg: oklch(0.98 0.01 90);
+  --dwk-bg-elev: oklch(0.96 0.01 90);
+  --dwk-bg-sunken: oklch(0.94 0.01 90);
+  --dwk-fg: oklch(0.2 0.02 270);
+  --dwk-fg-muted: oklch(0.4 0.02 270);
+  --dwk-border: oklch(0.85 0.02 270);
+  --dwk-border-strong: oklch(0.65 0.02 270);
+  --dwk-accent: oklch(0.48 0.15 240);
+  --dwk-accent-fg: oklch(0.99 0 0);
+  --dwk-success: oklch(0.45 0.17 130);
+  --dwk-warn: oklch(0.55 0.14 75);
+  --dwk-error: oklch(0.5 0.19 25);
+  --dwk-focus: oklch(0.55 0.2 220);
+}
+
+/* Motion — respect user preference. §12.7 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dwk-dur-fast: 1ms;
+    --dwk-dur-base: 1ms;
+    --dwk-dur-slow: 1ms;
+  }
+}

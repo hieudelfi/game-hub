@@ -1,0 +1,92 @@
+---
+import "../../styles/globals.css";
+import { DevUiCatalog } from "../../ui/DevUiCatalog";
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dev · UI catalog</title>
+    <meta name="robots" content="noindex" />
+    <meta name="color-scheme" content="dark light" />
+    <script is:inline>
+      (function () {
+        try {
+          var pref = localStorage.getItem("gh:theme-pref") || "system";
+          var isDark =
+            pref === "dark" ||
+            (pref === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = isDark ? "dark" : "light";
+        } catch (e) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-bg text-fg font-sans">
+    <main class="mx-auto max-w-5xl p-6 flex flex-col gap-6">
+      <header>
+        <h1 class="font-display text-2xl mb-2">Dev · UI catalog</h1>
+        <p class="text-fg-muted text-sm">
+          Inventory §12.5 — Button, Card, Toolbar, Badge, Toast, EmptyState. Kiểm tra visual +
+          interaction. Hover/focus dùng Tab để test. Chip và StagePanel sẽ vào ở P1.5-5 / P1.5-6.
+        </p>
+      </header>
+
+      <section class="rounded-md border border-border bg-bg-elev p-4 shadow-1">
+        <h2 class="font-display text-lg mb-2">Tokens · color</h2>
+        <p class="text-fg-muted text-sm mb-3">
+          Nguồn: <code class="font-mono">src/styles/tokens.css</code>. Ánh xạ:
+          <code class="font-mono">src/styles/globals.css</code> qua <code class="font-mono"
+            >@theme inline</code
+          >.
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+          {
+            [
+              ["bg", "bg-bg border border-border"],
+              ["bg-elev", "bg-bg-elev border border-border"],
+              ["bg-sunken", "bg-bg-sunken border border-border"],
+              ["accent", "bg-accent"],
+              ["success", "bg-success"],
+              ["warn", "bg-warn"],
+              ["error", "bg-error"],
+              ["focus", "bg-focus"],
+            ].map(([name, cls]) => (
+              <div class="flex flex-col gap-1">
+                <div class={`rounded-sm h-16 ${cls}`} title={name} />
+                <span class="text-xs font-mono text-fg-muted">{name}</span>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="rounded-md border border-border bg-bg-elev p-4 shadow-1">
+        <h2 class="font-display text-lg mb-2">Tokens · typography</h2>
+        <div class="flex flex-col gap-1">
+          <p class="text-hero font-display">Hero clamp</p>
+          <p class="text-2xl">2xl heading</p>
+          <p class="text-xl">xl section</p>
+          <p class="text-lg">lg card title</p>
+          <p class="text-base">base body</p>
+          <p class="text-sm text-fg-muted">sm muted</p>
+          <p class="text-xs text-fg-muted">xs meta</p>
+          <p class="font-mono text-sm">mono · 0123456789</p>
+        </div>
+      </section>
+
+      <DevUiCatalog client:load />
+    </main>
+  </body>
+</html>
+
+<style>
+  code {
+    padding-inline: 0.25em;
+    background: var(--dwk-bg-sunken);
+    border-radius: var(--dwk-radius-sm);
+  }
+</style>

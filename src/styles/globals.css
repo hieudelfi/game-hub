@@ -1,0 +1,102 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* Custom variant: touch — kich hoat khi thiet bi con tro tho (mobile/tablet).
+   Vi du: `hidden touch:flex` = an desktop, hien touch. */
+@custom-variant touch (@media (pointer: coarse));
+
+/* Ánh xạ token --dwk-* sang scale của Tailwind v4.
+   Đọc §12.4 trong docs/12-ui-ux-design.md truoc khi them entry moi. */
+@theme inline {
+  /* Colors — sinh bg-*, text-*, border-*, ring-* */
+  --color-bg: var(--dwk-bg);
+  --color-bg-elev: var(--dwk-bg-elev);
+  --color-bg-sunken: var(--dwk-bg-sunken);
+  --color-fg: var(--dwk-fg);
+  --color-fg-muted: var(--dwk-fg-muted);
+  --color-border: var(--dwk-border);
+  --color-border-strong: var(--dwk-border-strong);
+  --color-accent: var(--dwk-accent);
+  --color-accent-fg: var(--dwk-accent-fg);
+  --color-success: var(--dwk-success);
+  --color-warn: var(--dwk-warn);
+  --color-error: var(--dwk-error);
+  --color-focus: var(--dwk-focus);
+
+  /* Fonts — sinh font-sans, font-display, font-mono */
+  --font-sans: var(--dwk-font-body);
+  --font-display: var(--dwk-font-display);
+  --font-mono: var(--dwk-font-mono);
+
+  /* Typography — sinh text-xs..text-hero (co + line-height) */
+  --text-xs: var(--dwk-text-xs);
+  --text-xs--line-height: var(--dwk-text-xs--line);
+  --text-sm: var(--dwk-text-sm);
+  --text-sm--line-height: var(--dwk-text-sm--line);
+  --text-base: var(--dwk-text-base);
+  --text-base--line-height: var(--dwk-text-base--line);
+  --text-lg: var(--dwk-text-lg);
+  --text-lg--line-height: var(--dwk-text-lg--line);
+  --text-xl: var(--dwk-text-xl);
+  --text-xl--line-height: var(--dwk-text-xl--line);
+  --text-2xl: var(--dwk-text-2xl);
+  --text-2xl--line-height: var(--dwk-text-2xl--line);
+  --text-hero: var(--dwk-text-hero);
+  --text-hero--line-height: var(--dwk-text-hero--line);
+
+  /* Radius — sinh rounded-sm, rounded-md, rounded-lg, rounded-pill */
+  --radius-sm: var(--dwk-radius-sm);
+  --radius-md: var(--dwk-radius-md);
+  --radius-lg: var(--dwk-radius-lg);
+  --radius-pill: var(--dwk-radius-pill);
+
+  /* Shadow — sinh shadow-1, shadow-2, shadow-focus */
+  --shadow-1: var(--dwk-shadow-1);
+  --shadow-2: var(--dwk-shadow-2);
+  --shadow-focus: var(--dwk-shadow-focus);
+}
+
+/* Toast — enter/exit transition qua data-state. Duration lay tu token,
+   tu dong 1ms khi prefers-reduced-motion nho tokens.css. */
+.dwk-toast {
+  transition:
+    opacity var(--dwk-dur-slow) var(--dwk-ease-out),
+    transform var(--dwk-dur-slow) var(--dwk-ease-out);
+}
+.dwk-toast[data-state="enter"],
+.dwk-toast[data-state="exit"] {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+.dwk-toast[data-state="visible"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Reduced-motion reset — §12.7 nguyên tắc "chỉ opacity, không transform".
+   Duration đã về 1ms qua tokens.css. Ở đây triệt tiêu transform va animation
+   iteration de tránh dịch chuyển bất kỳ. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .dwk-toast[data-state="enter"],
+  .dwk-toast[data-state="exit"],
+  .dwk-toast[data-state="visible"] {
+    transform: none !important;
+  }
+}
+
+/* Canvas game — luon dung pixelated de scale khong lam mo */
+.dwk-pixelated {
+  image-rendering: pixelated;
+}
+
+/* Touch button — an flash mac dinh cua trinh duyet khi nhan */
+[data-touch] {
+  -webkit-tap-highlight-color: transparent;
+}
