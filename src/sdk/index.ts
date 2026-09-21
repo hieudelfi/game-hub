@@ -6,6 +6,7 @@ export type {
   HubUser,
   ToastOptions,
   HubContext,
+  HudState,
   GameSystem,
   GameManifest,
   GameInstance,

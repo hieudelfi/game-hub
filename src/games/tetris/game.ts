@@ -234,6 +234,7 @@ export default function mount(ctx: HubContext): GameInstance {
       score += LINE_POINTS[cleared] * (level + 1);
       lines += cleared;
       level = Math.floor(lines / 10);
+      ctx.setHud({ score, level });
     }
   }
 
@@ -263,6 +264,7 @@ export default function mount(ctx: HubContext): GameInstance {
   function softDrop(): void {
     if (tryMove(0, 1)) {
       score += 1;
+      ctx.setHud({ score });
     }
   }
 
@@ -271,6 +273,7 @@ export default function mount(ctx: HubContext): GameInstance {
     let dist = 0;
     while (tryMove(0, 1)) dist++;
     score += dist * 2;
+    ctx.setHud({ score });
     lockPiece();
     spawn();
     lastDrop = performance.now();
@@ -465,6 +468,7 @@ export default function mount(ctx: HubContext): GameInstance {
       spawn();
       running = true;
       lastDrop = performance.now();
+      ctx.setHud({ score, level });
       draw();
       rafId = requestAnimationFrame(loop);
     },

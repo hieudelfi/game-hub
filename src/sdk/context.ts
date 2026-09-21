@@ -1,5 +1,12 @@
 import { getHighScore, setHighScoreIfBeats } from "./score";
-import type { HubContext, HubUser, InputSystem, ScoreResult, ToastOptions } from "./types";
+import type {
+  HubContext,
+  HubUser,
+  HudState,
+  InputSystem,
+  ScoreResult,
+  ToastOptions,
+} from "./types";
 
 export interface CreateContextOpts {
   canvas: HTMLCanvasElement;
@@ -8,10 +15,11 @@ export interface CreateContextOpts {
   gameId: string;
   showToast: (msg: string, opts?: ToastOptions) => void;
   onScoreSubmitted: (result: ScoreResult, score: number, durationSec: number) => void;
+  onHudUpdate?: (state: HudState) => void;
 }
 
 export function createHubContext(opts: CreateContextOpts): HubContext {
-  const { canvas, user, input, gameId, showToast, onScoreSubmitted } = opts;
+  const { canvas, user, input, gameId, showToast, onScoreSubmitted, onHudUpdate } = opts;
   const startTime = performance.now();
 
   return {
@@ -33,6 +41,10 @@ export function createHubContext(opts: CreateContextOpts): HubContext {
       };
       onScoreSubmitted(result, score, actualDuration);
       return result;
+    },
+
+    setHud(state) {
+      onHudUpdate?.(state);
     },
 
     async unlockAchievement(_code) {

@@ -74,6 +74,7 @@ export default function mount(ctx: HubContext): GameInstance {
     score = 0;
     scoreSubmitted = false;
     state = "ready";
+    ctx.setHud({ score });
   }
 
   function flap(): void {
@@ -120,6 +121,7 @@ export default function mount(ctx: HubContext): GameInstance {
         if (!p.scored && p.x + PIPE_W < BIRD_X) {
           p.scored = true;
           score++;
+          ctx.setHud({ score });
         }
       }
       pipes = pipes.filter((p) => p.x + PIPE_W > -20);

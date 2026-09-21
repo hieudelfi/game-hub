@@ -1,4 +1,4 @@
-import { createHubContext, createInput, loadGame, resizeCanvas } from "../../sdk";
+import { createHubContext, createInput, getHighScore, loadGame, resizeCanvas } from "../../sdk";
 import type { Button, HubUser, InputSystem, ScoreResult } from "../../sdk";
 import type { CatalogEntry } from "../catalog";
 import { showToast } from "../toast";
@@ -44,29 +44,61 @@ export async function renderGame(
   const app = document.getElementById("app");
   if (!app) return async () => {};
 
+  const best = getHighScore(game.id)?.score ?? 0;
+  const btnBase =
+    "inline-flex items-center justify-center gap-2 rounded-md border border-border bg-transparent px-3 py-1.5 text-sm font-sans text-fg no-underline transition-colors duration-[var(--dwk-dur-fast)] hover:border-border-strong hover:bg-bg-elev focus-visible:outline-none focus-visible:shadow-focus";
+  const dpadBtn =
+    "w-14 h-14 rounded-md bg-bg-elev border border-border text-fg text-base cursor-pointer touch-none flex items-center justify-center active:bg-accent active:text-accent-fg active:border-accent focus-visible:outline-none focus-visible:shadow-focus";
+  const abBtnBase =
+    "w-16 h-16 rounded-full text-xl font-bold cursor-pointer touch-none flex items-center justify-center focus-visible:outline-none focus-visible:shadow-focus";
+  const aBtn =
+    "bg-success/[.14] border border-success text-success active:bg-success active:text-bg";
+  const bBtn = "bg-error/[.14] border border-error text-error active:bg-error active:text-bg";
+
   app.innerHTML = `
-    <div class="game-view">
-      <div class="game-view__toolbar">
-        <a class="btn" id="back-btn" href="#/" aria-label="Về trang chủ">← Về</a>
-        <h1 class="game-view__title">${escapeHtml(game.title)}</h1>
-        <button class="btn" id="fullscreen-btn" type="button" aria-label="Toàn màn hình">Toàn màn hình</button>
-      </div>
-      <div class="game-view__stage" id="stage">
-        <canvas id="game-canvas" tabindex="0" data-testid="game-canvas"></canvas>
-      </div>
-      <p class="game-view__hint">Điều khiển: mũi tên hoặc WASD. Z hoặc Space = A. X = B.</p>
-      <div class="touch-controls" data-testid="touch-controls">
-        <div class="touch-dpad" role="group" aria-label="Dpad">
-          <button class="touch-btn touch-btn--up" data-touch="up" type="button" aria-label="Lên">▲</button>
-          <button class="touch-btn touch-btn--left" data-touch="left" type="button" aria-label="Trái">◀</button>
-          <button class="touch-btn touch-btn--right" data-touch="right" type="button" aria-label="Phải">▶</button>
-          <button class="touch-btn touch-btn--down" data-touch="down" type="button" aria-label="Xuống">▼</button>
+    <div class="min-h-screen flex flex-col bg-bg text-fg">
+      <header class="sticky top-0 z-10 flex items-center gap-3 px-4 py-3 border-b border-border bg-bg-elev/80 backdrop-blur-sm">
+        <a id="back-btn" href="#/" class="${btnBase}" aria-label="Về trang chủ">
+          <span aria-hidden="true">←</span> Về
+        </a>
+        <h1 class="game-view__title flex-1 min-w-0 font-display text-lg text-center truncate">${escapeHtml(game.title)}</h1>
+        <div class="flex items-center gap-3 font-mono text-sm" aria-label="HUD">
+          <span class="text-fg-muted">Score</span>
+          <span id="hud-score" class="text-fg tabular-nums min-w-[3ch] text-right">0</span>
+          ${
+            best > 0
+              ? `<span class="inline-flex items-center rounded-pill border border-success bg-bg-elev px-2.5 py-0.5 text-xs font-medium text-success">Best ${best.toLocaleString("vi-VN")}</span>`
+              : ""
+          }
         </div>
-        <div class="touch-actions" role="group" aria-label="Nút hành động">
-          <button class="touch-btn touch-btn--b" data-touch="b" type="button" aria-label="B">B</button>
-          <button class="touch-btn touch-btn--a" data-touch="a" type="button" aria-label="A">A</button>
+        <button id="fullscreen-btn" type="button" class="${btnBase}" aria-label="Toàn màn hình">Toàn màn</button>
+      </header>
+
+      <main class="mx-auto w-full max-w-4xl px-4 py-6 flex flex-col items-center gap-4">
+        <div id="stage" class="rounded-lg bg-bg-sunken p-2 shadow-1 inline-block">
+          <canvas id="game-canvas" tabindex="0" data-testid="game-canvas" class="dwk-pixelated block rounded-md bg-black focus-visible:outline-none focus-visible:shadow-focus"></canvas>
         </div>
-      </div>
+
+        <p class="text-sm text-fg-muted text-center max-w-lg touch:hidden">
+          Điều khiển: mũi tên hoặc WASD. Z hoặc Space = A. X = B.
+        </p>
+
+        <div
+          data-testid="touch-controls"
+          class="hidden touch:flex w-full max-w-md items-center justify-between gap-4 px-2 pb-4 mt-2 select-none"
+        >
+          <div class="grid grid-cols-3 grid-rows-3 gap-1" role="group" aria-label="Dpad">
+            <button data-touch="up" type="button" aria-label="Lên" class="col-start-2 row-start-1 ${dpadBtn}">▲</button>
+            <button data-touch="left" type="button" aria-label="Trái" class="col-start-1 row-start-2 ${dpadBtn}">◀</button>
+            <button data-touch="right" type="button" aria-label="Phải" class="col-start-3 row-start-2 ${dpadBtn}">▶</button>
+            <button data-touch="down" type="button" aria-label="Xuống" class="col-start-2 row-start-3 ${dpadBtn}">▼</button>
+          </div>
+          <div class="flex gap-3 items-center" role="group" aria-label="Nút hành động">
+            <button data-touch="b" type="button" aria-label="B" class="${abBtnBase} ${bBtn}">B</button>
+            <button data-touch="a" type="button" aria-label="A" class="${abBtnBase} ${aBtn}">A</button>
+          </div>
+        </div>
+      </main>
     </div>
   `;
 
@@ -77,12 +109,19 @@ export async function renderGame(
   const input = createInput();
   const module = await loadGame(slug);
 
+  const hudScoreEl = document.getElementById("hud-score");
+
   const ctx = createHubContext({
     canvas,
     user,
     input,
     gameId: game.id,
     showToast,
+    onHudUpdate: (state) => {
+      if (hudScoreEl && typeof state.score === "number") {
+        hudScoreEl.textContent = state.score.toLocaleString("vi-VN");
+      }
+    },
     onScoreSubmitted: (result: ScoreResult, score: number, durationSec: number) => {
       saveLastResult(game.id, {
         score,

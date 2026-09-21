@@ -59,6 +59,37 @@ test("service worker file served at /sw.js", async ({ request }) => {
   expect(body).toContain("cacheFirst");
 });
 
+test("result screen shows score, badge, and CTAs (redesigned)", async ({ page }) => {
+  await page.addInitScript(() => {
+    sessionStorage.setItem(
+      "gh:last-result:snake",
+      JSON.stringify({
+        score: 142,
+        isHighScore: true,
+        previousHighScore: 100,
+        durationSec: 84,
+      })
+    );
+  });
+  await page.goto("/#/result/snake");
+  await expect(page.locator('[data-testid="final-score"]')).toHaveText("142");
+  await expect(page.getByText("Kỷ lục mới")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Chơi lại" })).toBeVisible();
+  await expect(page.locator("a", { hasText: /^Về trang chủ$/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Thử game khác" })).toBeVisible();
+});
+
+test("reduced-motion: card hover does not translate", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const card = page.locator(".game-card").first();
+  await card.waitFor({ state: "visible" });
+  await card.hover();
+  await page.waitForTimeout(50);
+  const transform = await card.evaluate((el) => getComputedStyle(el).transform);
+  expect(transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)").toBe(true);
+});
+
 test("touch controls hidden on desktop", async ({ page }) => {
   await page.goto("/#/game/snake");
   await expect(page.locator('[data-testid="game-canvas"]')).toBeVisible();

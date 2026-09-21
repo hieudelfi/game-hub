@@ -1,6 +1,10 @@
 ---
+import "../styles/globals.css";
+import { HomeView } from "../ui/HomeView";
+import { loadCatalog } from "../shell/catalog";
 const title = "Game Hub";
 const description = "Chơi game console kinh điển và mini-game HTML5, chạy thẳng trên trình duyệt.";
+const catalog = loadCatalog();
 ---
 
 <!doctype html>
@@ -8,16 +12,36 @@ const description = "Chơi game console kinh điển và mini-game HTML5, chạy
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="dark light" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      // FOUC guard: set data-theme truoc khi stylesheet render.
+      (function () {
+        try {
+          var pref = localStorage.getItem("gh:theme-pref") || "system";
+          var isDark =
+            pref === "dark" ||
+            (pref === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = isDark ? "dark" : "light";
+        } catch (e) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
   </head>
-  <body>
-    <div id="app" aria-live="polite">
-      <p class="loading">Đang tải...</p>
+  <body class="bg-bg text-fg font-sans">
+    <div id="home-root">
+      <HomeView catalog={catalog} client:load />
     </div>
-    <div id="toast-root" aria-live="polite"></div>
+    <div id="app" hidden aria-live="polite"></div>
+    <div
+      id="toast-root"
+      aria-live="polite"
+      class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none w-80 max-w-full"
+    >
+    </div>
     <script>
       import "../shell/main";
     </script>

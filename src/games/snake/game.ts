@@ -58,6 +58,7 @@ export default function mount(ctx: HubContext): GameInstance {
     gameOver = false;
     scoreSubmitted = false;
     placeFood();
+    ctx.setHud({ score });
   }
 
   function placeFood(): void {
@@ -82,6 +83,7 @@ export default function mount(ctx: HubContext): GameInstance {
     snake.unshift(head);
     if (head.x === food.x && head.y === food.y) {
       score += 10;
+      ctx.setHud({ score });
       placeFood();
     } else {
       snake.pop();

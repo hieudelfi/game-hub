@@ -30,6 +30,11 @@ export interface ToastOptions {
   kind?: "info" | "ok" | "warn";
 }
 
+export interface HudState {
+  score?: number;
+  level?: number;
+}
+
 export interface HubContext {
   canvas: HTMLCanvasElement;
   audioContext: AudioContext | null;
@@ -37,6 +42,7 @@ export interface HubContext {
   input: InputSystem;
 
   reportScore(score: number, level?: number, durationSec?: number): Promise<ScoreResult>;
+  setHud(state: HudState): void;
   saveState?(bytes: Uint8Array, slot?: number): Promise<void>;
   loadState?(slot?: number): Promise<Uint8Array | null>;
   unlockAchievement?(code: string): Promise<void>;
