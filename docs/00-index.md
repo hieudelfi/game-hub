@@ -15,6 +15,8 @@ Tài liệu được đánh số thứ tự đọc. Từng file đứng độc l
 9. [09-workflow.md](09-workflow.md) — Workflow phát triển: branch, PR, review, deploy, hotfix.
 10. [10-implementation-notes.md](10-implementation-notes.md) — Gotcha kỹ thuật, pattern chuẩn, chống lỗi thường gặp.
 11. [11-roadmap.md](11-roadmap.md) — Lộ trình task-level, ước lượng, Definition of Done, milestone.
+12. [12-ui-ux-design.md](12-ui-ux-design.md) — Design system, tokens, component, IA, wireframe, motion, a11y.
+13. [13-phase2-runbook.md](13-phase2-runbook.md) — Runbook chi tiết Phase 2 (auth + cloud): setup Supabase, migration, wire client, leaderboard, cloud save, deploy, rollback.
 
 ## Đọc theo nhu cầu
 

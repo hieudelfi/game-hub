@@ -368,3 +368,20 @@ Cloudflare Web Analytics đã có sẵn RUM, có thể bỏ đoạn này. Chỉ 
 - **`gen_random_uuid()`** cần extension `pgcrypto` bật (Supabase mặc định đã bật).
 - **Postgres `timestamptz`** luôn ưu tiên `timestamp` — tránh sai timezone.
 - **Không dùng `console.time`** trong production build — dev-only.
+
+## 10.21 UI / Phase 1.5 gotcha
+
+Ghi từ những chỗ mất time thật khi migrate từ CSS thủ công sang Tailwind v4 + React island.
+
+- **`@vitejs/plugin-react can't detect preamble`** khi import `.tsx` từ script Astro thường (`<script>import "../shell/main"</script>`). Fix: render component qua Astro island (`<HomeView client:load />`), không tự `createRoot()` trong script. Astro chỉ inject React preamble khi trang có Astro island rõ ràng.
+- **Stale Astro dev server chiếm port 4321** làm Playwright test giả pass/fail. Trước khi debug e2e lạ, kiểm `Get-NetTCPConnection -LocalPort 4321` và kill process đang giữ.
+- **Contrast test axe fail sau khi thêm `@media (prefers-color-scheme: light)`** vì Chromium headless default light → light-mode `--dwk-fg` (dark) trên hardcoded dark bg. Fix ngắn: khoá dark (comment light block trong `tokens.css`). Fix dài: theme switcher post-MVP.
+- **Element selector trong CSS chưa vào `@layer`** (ví dụ `a { color: var(--accent) }` unlayered) sẽ đè utility Tailwind vì cascade layer priority. Nếu phải cùng tồn tại với utility, bọc CSS legacy trong `@layer legacy { ... }` và khai báo order `@layer legacy, theme, base, components, utilities;`.
+- **`opacity` trên class dùng làm test selector** kéo contrast xuống < 4.5:1 mà axe thấy. Nếu class chỉ để test (không có style), xoá khỏi CSS hoặc rename.
+- **`.game-card` class được test e2e dùng làm selector** — khi refactor Home sang React island, phải giữ nguyên class name `game-card` + attribute `data-slug` trên card link để test không phải rewrite.
+- **Canvas 400x400 cố định** overflow trên viewport 360px. `resizeCanvas()` (SDK) phải set `maxWidth: 100%`, `height: auto`, `aspectRatio` → canvas co lại theo container mà giữ intrinsic pixel dimensions cho game logic.
+- **Reduced-motion test:** `page.emulateMedia({ reducedMotion: "reduce" })` + assert `getComputedStyle(el).transform === "none"`. Combo `motion-safe:hover:-translate-y-*` + global CSS reset `@media (prefers-reduced-motion) { *,::before,::after { animation-duration:1ms !important; transition-duration:1ms !important } }` là đủ.
+- **Visual regression baseline platform-specific:** Playwright ghi `-chromium-win32.png` local (Windows). CI ubuntu-latest cần `-chromium-linux.png` riêng. `visual.spec.ts` kiểm fs, tự skip trên CI khi thư mục snapshot **thiếu** file `-chromium-linux.png`. Sinh baseline linux: workflow_dispatch `Visual baselines (regenerate)` trên GitHub Actions (commit tự động vào branch), hoặc local Docker qua `bash scripts/gen-linux-baselines.sh`. Sau khi linux baseline lands trên branch, CI e2e tự bật visual test — không cần sửa code.
+- **React runtime 67KB gzip** load ngay trên public / vì HomeView là island. Nếu thêm view mới, dùng vanilla template + Tailwind (như game/result) khi không cần state phức tạp — tiết kiệm bundle.
+- **Bỏ nhớ import `../styles/globals.css`** trong Astro page frontmatter → Tailwind class không apply, hoặc chỉ apply ở page nào có import. Convention: mọi page dùng utility đều import ở frontmatter.
+- **`bg-{tone}/[.14]` cần tone màu là CSS variable** với `@theme inline`. Tailwind v4 sinh `color-mix()` để hỗ trợ opacity — tự động, không cần setup thêm.

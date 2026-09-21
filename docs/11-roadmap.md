@@ -43,6 +43,33 @@ Mục tiêu: **3 game HTML5 native chơi được, save điểm local, không au
 
 **Milestone drop cuối phase 1:** publish outcome, share link với 3-5 người test, thu feedback.
 
+## 11.2b Phase 1.5 — UI/UX Redesign (Tuần 2-3)
+
+Mục tiêu: **thay lớp trình bày rời rạc bằng design system nhất quán** (tokens + component + motion), trước khi ghép cloud/auth vào để không phải làm lại UI hai lần.
+
+Trigger: sau P1 smoke thấy UI dùng CSS thủ công, không có tokens, không có component reusable, home/game/result mỗi màn hình một style, mobile control dễ đè lên stage. Cần chuẩn hoá.
+
+Approach: **Astro + Tailwind v4 (`@theme` từ tokens) + React island cho component tương tác**. Giữ vanilla canvas cho game. Design tokens tuân theo convention `dwk-ui` (biến `--dwk-*` trong `src/styles/tokens.css`) để reuse skill khi generate component.
+
+| ID | Task | Ước lượng | Phụ thuộc | DoD |
+|---|---|---|---|---|
+| P1.5-1 | Design doc: audit UI hiện tại, principles, IA, wireframe low-fi home/game/result | 3h | P1 | `docs/12-ui-ux-design.md` merge; có ảnh/mermaid IA + 3 wireframe |
+| P1.5-2 | Design tokens (`src/styles/tokens.css` — `--dwk-*` cho color oklch, typography, spacing, radius, shadow, motion) | 2h | P1.5-1 | File tồn tại, có dark + light palette, `docs/12` liệt kê token |
+| P1.5-3 | Add Tailwind v4 + `@astrojs/react` integration, wire `@theme` từ tokens | 2h | P1.5-2 | `pnpm dev` build sạch, class Tailwind áp dụng được trong 1 Astro page demo |
+| P1.5-4 | Component library nội bộ (`src/ui/`): Button, Card, Toolbar, Badge, Toast, EmptyState (React island) | 4h | P1.5-3 | Storybook-lite page `/dev/ui` liệt kê hết component, đủ state (default/hover/focus/disabled) |
+| P1.5-5 | Home redesign: hero + section "Tiếp tục chơi" + game grid mới + filter chip đơn giản | 4h | P1.5-4 | Home dùng component mới, không còn CSS ad-hoc; grid responsive 4/3/2/1 col |
+| P1.5-6 | Game view redesign: toolbar sticky, stage frame + HUD score/best, on-screen controls polish (không đè stage) | 3h | P1.5-4 | 3 game vẫn chơi được, control mobile không che canvas |
+| P1.5-7 | Result screen redesign: big score, badge "New best", CTA replay/back, gợi ý game kế tiếp | 2h | P1.5-4 | Screen dùng component mới, replay giữ nguyên flow cũ |
+| P1.5-8 | Motion + microinteraction (transition consistent, `prefers-reduced-motion` respect) | 1h | P1.5-4 | Toggle reduced-motion trong DevTools tắt hết animation phi thiết yếu |
+| P1.5-9 | Accessibility pass (focus ring, keyboard nav Home↔Game, ARIA landmark, contrast AA) | 3h | P1.5-4..7 | axe DevTools 0 critical; keyboard-only demo qua đủ flow |
+| P1.5-10 | Responsive audit 360/390/768/1024/1440 | 1h | P1.5-5..7 | 5 screenshot lưu `docs/design/screens/`, không overflow ngang |
+| P1.5-11 | Visual regression Playwright (baseline home/game/result light+dark) | 2h | P1.5-5..7 | `pnpm test:e2e` bao gồm 6 screenshot pass |
+| P1.5-12 | Migration checklist: xoá `styles.css` legacy, cập nhật `02-architecture.md` §UI + `10-implementation-notes.md` | 1h | tất cả P1.5 | Không còn tham chiếu tới `shell/styles.css`; docs khớp code |
+
+**Tổng phase 1.5:** ~28 giờ (~4 ngày công).
+
+**Milestone drop:** publish outcome kèm before/after screenshot. Chỉ sau khi drop OK mới sang Phase 2.
+
 ## 11.3 Phase 2 — Tài khoản + cloud (Tuần 3-4)
 
 Mục tiêu: **anonymous auth, cloud save, leaderboard toàn cầu.**
@@ -141,12 +168,13 @@ Mọi task, để coi là done:
 |---|---|---|---|
 | P0 | 7 | 1 | 3 ngày |
 | P1 | 39 | 6 | 14 ngày |
+| P1.5 | 28 | 4 | 10 ngày |
 | P2 | 35 | 5 | 12 ngày |
 | P3 | 37 | 6 | 13 ngày |
 | P4 | 43 | 7 | 15 ngày |
-| **Tổng MVP** | **161** | **~25 ngày** | **~57 ngày** |
+| **Tổng MVP** | **189** | **~29 ngày** | **~67 ngày** |
 
-Full-time thuần: ~5 tuần. Part-time buổi tối/cuối tuần: ~2 tháng.
+Full-time thuần: ~6 tuần. Part-time buổi tối/cuối tuần: ~2 tháng rưỡi.
 
 ## 11.9 Rủi ro và giảm nhẹ
 

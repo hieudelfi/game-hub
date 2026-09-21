@@ -137,7 +137,21 @@ graph TB
 - Migration Supabase chạy thủ công qua `supabase db push` khi merge; tự động hoá bằng GitHub Actions ở phase sau.
 - Rollback: revert commit → Cloudflare tự deploy lại; migration Postgres có bản `down` cho mỗi bản `up`.
 
-## 2.6 Nhật ký quyết định kiến trúc (ADR)
+## 2.6 UI design system (Phase 1.5)
+
+Nguồn sự thật chi tiết: `12-ui-ux-design.md`. Đây là tóm tắt kiến trúc để đọc kèm mã.
+
+- **Tokens:** `src/styles/tokens.css` giữ mọi biến `--dwk-*` (oklch color, typography, spacing, radius, shadow, motion). Đổi giá trị → chỉ chạm file này (và cập nhật §12.4). Palette light kích hoạt qua `[data-theme="light"]` selector — dark vẫn là mặc định. Resolver `src/shell/theme.ts` + inline FOUC guard trong `index.astro` set `document.documentElement.dataset.theme` ngay khi trang mount.
+- **Ánh xạ Tailwind v4:** `src/styles/globals.css` dùng `@theme inline` map `--dwk-*` sang scale Tailwind (`bg-bg`, `text-fg`, `text-hero`, `rounded-md`, `shadow-1`, `font-display`…). Không có Tailwind config JS; toàn bộ theme ở CSS.
+- **Custom variant `touch:`** — `@custom-variant touch (@media (pointer: coarse))` để bật/tắt utility theo thiết bị con trỏ (`hidden touch:flex` cho mobile overlay).
+- **Component nội bộ:** `src/ui/{Button,Card,Toolbar,Badge,Chip,Toast,EmptyState,StagePanel}` (React 19). Không phụ thuộc UI library ngoài (không dùng Radix, MUI, shadcn). Barrel export ở `src/ui/index.ts`.
+- **React island pattern:** shell tổng thể vẫn là Astro static (`src/pages/index.astro`). Home render qua `<HomeView client:load />` (Astro island đúng chuẩn — cần thiết để `@vitejs/plugin-react` inject preamble). Game view và Result view vẫn render imperative bằng template string trong `src/shell/views/{game,result}.ts` — chỉ dùng utility class Tailwind, không mount React (tránh cost React runtime cho screen đơn giản).
+- **Routing:** shell hash router (`src/shell/main.ts`) toggle `hidden` giữa `#home-root` (chứa React island) và `#app` (nơi vanilla view render). Chỉ 1 `<main>` visible tại 1 thời điểm.
+- **Motion:** duration/easing đọc từ `--dwk-dur-*` + `--dwk-ease-*`. `prefers-reduced-motion: reduce` triệt tiêu transition + transform (globals.css). Tailwind arbitrary `motion-safe:hover:*` để bọc transform hover.
+- **A11y:** tokens `--dwk-focus` + utility `shadow-focus` cho focus ring. Landmark `<main>` trong mỗi view. `role="status|alert"` cho Toast. Test axe-core (0 serious/critical) qua Playwright.
+- **Deprecated:** `src/shell/styles.css` đã xoá ở P1.5-12. Không còn CSS thủ công ngoài `src/styles/*`.
+
+## 2.7 Nhật ký quyết định kiến trúc (ADR)
 
 Format: `ADR-NNN | Ngày | Bối cảnh | Lựa chọn | Alternative loại | Hệ quả`.
 
@@ -180,3 +194,13 @@ Chỉ ghi thêm, không sửa. Nếu quyết định cũ bị thay, tạo ADR m�
   - Bắt đăng ký ngay — mất traffic thấy rõ.
   - Nickname-only không auth — không đồng bộ được cross-device, dễ bị mạo danh leaderboard.
 - **Hệ quả:** DB có nhiều anonymous user rác; cần cron cleanup user anonymous không hoạt động 90 ngày.
+
+### ADR-005 | 2026-09-18 | Tailwind v4 + tokens `--dwk-*` cho design system
+
+- **Bối cảnh:** sau P1 MVP, UI CSS thủ công rải rác `shell/styles.css`, không tái sử dụng được component; cần chuẩn hoá trước khi ghép cloud để không làm UI hai lần.
+- **Lựa chọn:** Tailwind v4 dùng `@theme inline` để map CSS custom property `--dwk-*` (oklch) sang utility. Component nội bộ trong `src/ui/` viết bằng React 19 island; screen game/result vẫn vanilla template + utility class.
+- **Alternative loại:**
+  - Tailwind v3 + JS config — v4 cho tokens qua `@theme` gọn hơn, không cần build config JS.
+  - CSS Modules per component — không có utility ergonomics, không có tokens ánh xạ tự động.
+  - shadcn/Radix full stack — kéo theo phụ thuộc lớn, xung đột với target bundle "≤ 40KB gzip diff", không cần primitive phức tạp ở MVP.
+- **Hệ quả:** phụ thuộc runtime thêm React 19 (~67KB gzip client.js) và Tailwind CSS (~1.5KB gzip). Bundle public / tăng đáng kể — chấp nhận vì tokens + component reuse trả lại nợ nhanh khi Phase 2/3 thêm view. Light theme khoá (comment) trong `tokens.css` cho tới khi có theme switcher (post-MVP).

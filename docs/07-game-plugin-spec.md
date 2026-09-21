@@ -70,6 +70,10 @@ export interface HubContext {
   loadState(slot?: number): Promise<Uint8Array | null>;
   unlockAchievement(code: string): Promise<void>;
 
+  // HUD (live) — plugin gọi mỗi lần score/level đổi để shell cập nhật ngoài canvas.
+  // Rẻ, không throttle nội bộ; nếu gọi rất dày (>60Hz), plugin tự throttle.
+  setHud(state: { score?: number; level?: number }): void;
+
   // UI helper
   showToast(msg: string, opts?: { duration?: number; kind?: 'info'|'ok'|'warn' }): void;
   requestFullscreen(): Promise<void>;

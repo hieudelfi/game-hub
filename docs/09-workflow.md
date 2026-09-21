@@ -128,10 +128,10 @@ Với bug production nghiêm trọng (game không load, submit score fail):
 ## 9.7 Môi trường phát triển local
 
 Yêu cầu:
-- Node 20+
-- pnpm 9+
-- Supabase CLI (`brew install supabase/tap/supabase` hoặc scoop)
-- Docker Desktop (chỉ để chạy Supabase local, không bắt buộc — có thể dùng project Supabase cloud dev)
+- Node 20 LTS (CI dùng 20; Node 24 chạy được local nhưng kiểm chéo trên CI trước khi push).
+- pnpm 11 (repo pin `packageManager: pnpm@11.6.0`).
+- Supabase CLI (`brew install supabase/tap/supabase` hoặc scoop).
+- Docker Desktop (chỉ để chạy Supabase local, không bắt buộc — có thể dùng project Supabase cloud dev).
 
 Setup:
 ```bash
@@ -143,6 +143,47 @@ pnpm dev              # Astro dev server tại :4321
 supabase start        # Postgres local ở :54322, nếu dùng local mode
 supabase db reset     # apply migrations + seed
 ```
+
+### Gotcha: pnpm 11 `allowBuilds`
+
+pnpm 11 chặn mọi native postinstall script mặc định. Astro cần `esbuild` và `sharp` build trong lúc install → nếu không cho phép, `pnpm install` sẽ dừng chờ approval.
+
+Repo đã pin cấu hình trong `pnpm-workspace.yaml`:
+```yaml
+allowBuilds:
+  esbuild: true
+  sharp: true
+```
+
+Nếu dev mới clone repo mà install treo, kiểm tra file này tồn tại. Thêm entry cho dependency native mới khi cần (dependency báo trong log `Ignored build scripts:`).
+
+### Cross-platform note
+
+Phần lớn dev + CI chạy Linux/macOS. Trên Windows PowerShell:
+- Path separator dùng `\` — không ảnh hưởng pnpm/Vite (họ chuẩn hoá).
+- Playwright visual baseline lưu suffix `-chromium-win32.png`, khác `-linux.png` của CI. Chi tiết ở §10.21 (`10-implementation-notes.md`).
+- Kill stale dev server port 4321 khi Playwright báo lỗi lạ: `Get-NetTCPConnection -LocalPort 4321` rồi `Stop-Process -Id <PID>`.
+
+### Sinh visual baseline cho CI (chromium-linux)
+
+CI chạy ubuntu-latest → cần `-chromium-linux.png`, khác baseline local `-chromium-win32.png`. Test tự skip trên CI khi thiếu linux baseline (fs check trong `visual.spec.ts`). Hai cách sinh:
+
+**Cách 1 — CI workflow (không cần Docker local):**
+
+1. Push branch lên GitHub.
+2. Tab `Actions` → chọn workflow `Visual baselines (regenerate)` → `Run workflow`.
+3. CI chạy Playwright headless linux, sinh baseline `-chromium-linux.png`, tự commit vào branch với message `chore: regenerate linux visual baselines`.
+4. Pull về, CI lần tới sẽ bật visual test.
+
+**Cách 2 — Local Docker:**
+
+```bash
+bash scripts/gen-linux-baselines.sh
+```
+
+Script pull Playwright image cùng version `@playwright/test` trong `package.json`, mount repo, chạy `playwright test tests/e2e/visual.spec.ts --update-snapshots`. Kết quả: file `*-chromium-linux.png` mới trong `tests/e2e/visual.spec.ts-snapshots/`. Commit tay.
+
+**Khi nào cần chạy lại:** mỗi lần redesign UI đáng kể (thay layout, đổi component visual). Không cần chạy khi chỉ đổi logic hoặc chuỗi chữ trong shell chrome cho screenshot đã mask.
 
 ## 9.8 Testing strategy
 
