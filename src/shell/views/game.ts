@@ -2,6 +2,7 @@ import { createHubContext, createInput, getHighScore, loadGame, resizeCanvas } f
 import type { Button, HubUser, InputSystem, ScoreResult } from "../../sdk";
 import type { CatalogEntry } from "../catalog";
 import { showToast } from "../toast";
+import { submitScoreRemote } from "../../lib/report";
 
 const CANVAS_WIDTH = 400;
 const CANVAS_HEIGHT = 400;
@@ -128,6 +129,13 @@ export async function renderGame(
         isHighScore: result.isHighScore,
         previousHighScore: result.previousHighScore,
         durationSec,
+      });
+      void submitScoreRemote({
+        slug: game.slug,
+        score,
+        level: 0,
+        durationSec,
+        user,
       });
       setTimeout(() => {
         location.hash = `#/result/${game.slug}`;
