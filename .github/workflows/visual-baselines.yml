@@ -1,0 +1,58 @@
+name: Visual baselines (regenerate)
+
+# Trigger thủ công qua tab Actions -> "Visual baselines (regenerate)" -> "Run workflow".
+# Sinh baseline chromium-linux cho tests/e2e/visual.spec.ts, commit lại branch.
+# Dùng khi:
+#  - Redesign UI, cần cập nhật baseline cho CI Linux
+#  - Sinh lần đầu tiên baseline -linux.png (hiện tại chỉ có -win32.png từ local)
+#
+# Sau khi baseline linux lands trên branch, xoá `test.skip(!!process.env.CI)`
+# trong `tests/e2e/visual.spec.ts` để CI e2e chạy visual regression thật.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Regenerate visual baselines (CI-mode override off)
+        env:
+          CI: ""
+        run: pnpm exec playwright test tests/e2e/visual.spec.ts --update-snapshots
+
+      - name: Commit baselines back to branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/e2e/visual.spec.ts-snapshots/
+          if git diff --cached --quiet; then
+            echo "No baseline changes"
+            exit 0
+          fi
+          git commit -m "chore: regenerate linux visual baselines"
+          git push origin HEAD:${{ github.ref_name }}
